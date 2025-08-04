@@ -11,30 +11,23 @@ export interface Boat {
 }
 
 export default function BoatCard({ boat }: { boat: Boat }) {
+  // Drei Platzhalter-Bilder zyklisch verwenden
+  const idx = parseInt(boat.id, 10) % 3 + 1;
+  const src = boat.image_url || `/images/boat${idx}.jpg`;
+
   return (
     <Link
       href={`/boats/${boat.id}`}
-      className="block overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition"
+      className="block bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition"
     >
-      <div className="relative h-48 bg-gray-200">
-        {boat.image_url ? (
-          <Image
-            src={boat.image_url}
-            alt={boat.name}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-gray-500">
-            Kein Bild
-          </div>
-        )}
+      <div className="relative h-48 bg-gray-100">
+        <Image src={src} alt={boat.name} fill className="object-cover" />
       </div>
-      <div className="p-4 bg-white">
-        <h3 className="text-lg font-semibold">{boat.name}</h3>
-        <p className="mt-1 text-sm text-gray-500">{boat.type}</p>
-        <div className="mt-2 flex items-center justify-between">
-          <span className="text-brand font-bold">{boat.price} € / Tag</span>
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-800">{boat.name}</h3>
+        <p className="text-sm text-gray-500">{boat.type}</p>
+        <div className="mt-3 flex items-center justify-between">
+          <span className="text-teal-600 font-bold">{boat.price} €/Tag</span>
           <span className="text-sm text-gray-600">{boat.location}</span>
         </div>
       </div>

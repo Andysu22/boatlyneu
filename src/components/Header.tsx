@@ -1,44 +1,28 @@
-import NextLogo from './NextLogo'
-import SupabaseLogo from './SupabaseLogo'
+"use client";
+import Link from "next/link";
 
 export default function Header() {
   return (
-    <div className="flex flex-col items-center gap-16">
-      <div className="flex items-center justify-center gap-8">
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <SupabaseLogo />
-        </a>
-        <span className="h-6 rotate-45 border-l" />
-        <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <NextLogo />
-        </a>
+    <header className="fixed inset-x-0 top-0 z-50 bg-white shadow">
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+        <Link href="/" className="text-2xl font-bold text-teal-600">
+          Boatly
+        </Link>
+        <nav className="space-x-6 text-gray-700 hidden md:flex">
+          <Link href="/boats" className="hover:text-teal-600">Boote</Link>
+          <Link href="/about" className="hover:text-teal-600">Über uns</Link>
+          <Link href="/contact" className="hover:text-teal-600">Kontakt</Link>
+        </nav>
+        <div className="space-x-4">
+          <Link href="/login" className="text-gray-700 hover:text-teal-600">Login</Link>
+          <Link
+            href="/signup"
+            className="bg-amber-500 hover:bg-amber-400 text-white px-4 py-1.5 rounded-lg transition"
+          >
+            Sign Up
+          </Link>
+        </div>
       </div>
-      <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-      <p className="mx-auto max-w-xl text-center text-3xl !leading-tight lg:text-4xl">
-        The fastest way to build apps with{' '}
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Supabase
-        </a>{' '}
-        and{' '}
-        <a
-          href="https://nextjs.org/"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Next.js
-        </a>
-      </p>
-      <div className="my-8 w-full bg-gradient-to-r from-transparent via-foreground/10 to-transparent p-[1px]" />
-    </div>
-  )
+    </header>
+  );
 }
