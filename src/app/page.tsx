@@ -29,7 +29,7 @@ export default async function HomePage() {
       <Hero />
       <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-gray-800">Beliebte Boote</h2>
+          <h2 className="text-3xl font-bold mb-8 text-gray-800">Beliebte Boote TEST</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {boats.map(b => <BoatCard key={b.id} boat={b} />)}
           </div>
