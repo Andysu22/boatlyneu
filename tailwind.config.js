@@ -1,18 +1,17 @@
 // tailwind.config.js
-const { fontFamily } = require("tailwindcss/defaultTheme");
-
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
-      fontFamily: {
-        // font-sans verwendet jetzt unsere Google-Variable
-        sans: ["var(--font-sans)", ...fontFamily.sans],
-      },
       colors: {
-        brand: { DEFAULT: "#0d9488", light: "#14b8a6" },
-        accent: { DEFAULT: "#f59e0b", light: "#fbbf24" },
-        // … (deine anderen Tokens)
+        brand: { DEFAULT: "#0d9488", light: "#14b8a6" },   // Hauptfarbe
+        accent: { DEFAULT: "#f59e0b", light: "#fbbf24" },   // Akzentfarbe
+        dark: "#1f2937",                                    // dunkler Hintergrund
+      },
+      fontFamily: {
+        // Inter via next/font
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui"],
       },
     },
   },
