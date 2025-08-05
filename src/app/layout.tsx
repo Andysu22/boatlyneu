@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="font-sans bg-gray-50 text-gray-800 antialiased">
         <Providers>
           <Header />
-          <main className="pt-16">{children}</main>
+          <main>{children}</main>
         </Providers>
       </body>
     </html>

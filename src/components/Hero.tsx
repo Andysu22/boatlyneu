@@ -5,7 +5,7 @@ import SearchBar from "./SearchBar";
 
 export default function Hero() {
   return (
-    <section className="relative bg-gradient-to-b from-brand to-transparent pt-16">
+    <section className="relative pt-14 bg-gradient-to-b from-brand to-transparent">
       <div className="max-w-4xl mx-auto text-center py-20 px-4">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4">
           Finde dein Traumboot
