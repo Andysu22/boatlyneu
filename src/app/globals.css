@@ -1,24 +1,20 @@
 /* src/app/globals.css */
 
-/* 1) Tailwind-Directives */
+/* Tailwind Basics */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* React-Day-Picker Styles */
 @import "react-day-picker/dist/style.css";
 
-/* 2) React-Datepicker Basis-Styles */
-
-
-/* 3) Deine Overrides im utilities-Layer */
+/* React-Datepicker Custom Styles */
 @layer utilities {
-  /* Popper-Container überlagert alles */
   .react-datepicker-popper {
     position: fixed !important;
     z-index: 50;
   }
 
-  /* Kalender-Widget selbst */
   .react-datepicker {
     @apply bg-white rounded-xl shadow-xl border border-gray-200;
     font-family: inherit;
@@ -26,8 +22,6 @@
   .react-datepicker__triangle {
     display: none;
   }
-
-  /* Header */
   .react-datepicker__header {
     @apply bg-brand text-white rounded-t-xl border-b border-gray-200;
     padding: 0.75rem;
@@ -41,8 +35,6 @@
   .react-datepicker__day-name {
     @apply text-sm text-white/70;
   }
-
-  /* Die Tage */
   .react-datepicker__day {
     @apply w-10 h-10 leading-10 text-center rounded-full hover:bg-brand-light/30 transition;
   }
@@ -53,14 +45,12 @@
   .react-datepicker__day--today {
     @apply bg-brand-light/20;
   }
-
-  /* Pfeil-Icons */
   .react-datepicker__navigation-icon::before {
     border-color: white;
   }
 }
 
-/* 4) Optional: Grund-Layer für glattes Scrollen */
+/* Grundstyles für Smoothness und Font */
 @layer base {
   html {
     scroll-behavior: smooth;

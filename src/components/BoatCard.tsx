@@ -1,154 +1,148 @@
-// src/components/BoatCard.tsx
-"use client";
+'use client'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Heart, Star, MapPin, Users, Zap, Clock } from 'lucide-react'
+import { useState } from 'react'
 
-import { useState, useRef } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Star, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
-
-export interface Boat {
-  id: string;
-  name: string;
-  type: string | null;
-  price: number;
-  location: string | null;
-  image_url: string | null;
-  rating?: number;
+export interface BoatCardProps {
+  boat: {
+    id: string
+    name: string
+    location: string | null
+    country?: string
+    price: number
+    image_url: string | null
+    rating?: number
+    reviews?: number
+    available?: boolean
+    persons?: number
+    ps?: number
+    length?: string
+    type?: string
+  }
+  onDetails?: () => void
 }
 
-export default function BoatCard({ boat }: { boat: Boat }) {
-  const router = useRouter();
-
-  // Bilder-Array (3 Fallbacks)
-  const idx = parseInt(boat.id, 10) % 3 + 1;
+export default function BoatCardNew({ boat, onDetails }: BoatCardProps) {
+  // Bild-Array mit Fallbacks
+  const idx = (parseInt(boat.id, 10) % 3) + 1
   const fallback = [
     `/images/boat${idx}.jpg`,
     `/images/boat${(idx % 3) + 1}.jpg`,
     `/images/boat${((idx + 1) % 3) + 1}.jpg`,
-  ];
-  const images = boat.image_url ? [boat.image_url, ...fallback.slice(0, 2)] : fallback;
+  ]
+  const images = boat.image_url
+    ? [boat.image_url, ...fallback.slice(0, 2)]
+    : fallback
 
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(0)
 
-  // Touch-Swipe
-  const touchStartX = useRef<number | null>(null);
-  const touchEndX = useRef<number | null>(null);
-  const minSwipeDistance = 50;
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchEndX.current = null;
-    touchStartX.current = e.targetTouches[0].clientX;
-  };
-  const onTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.targetTouches[0].clientX;
-  };
-  const onTouchEnd = () => {
-    if (
-      touchStartX.current !== null &&
-      touchEndX.current !== null &&
-      Math.abs(touchStartX.current - touchEndX.current) > minSwipeDistance
-    ) {
-      if (touchStartX.current > touchEndX.current) {
-        setCurrent((c) => (c + 1) % images.length);
-      } else {
-        setCurrent((c) => (c - 1 + images.length) % images.length);
-      }
-    }
-  };
-
-  const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
-  const next = () => setCurrent((c) => (c + 1) % images.length);
-  const rating = boat.rating ?? 4.5;
+  // Modernisierte Daten mit Fallbacks
+  const rating = typeof boat.rating === 'number' ? boat.rating : 0
+  const reviews = typeof boat.reviews === 'number' ? boat.reviews : 0
+  const persons = boat.persons || '–'
+  const ps = boat.ps || '–'
+  const length = boat.length || '–'
 
   return (
-    <div
-      className="block bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition animate-slideUp cursor-pointer"
-      onClick={() => router.push(`/boats/${boat.id}`)}
-    >
-      {/* Slider */}
-      <div
-        className="relative h-56 bg-gray-100 group overflow-hidden"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
+    <div className="relative mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl bg-white font-sans shadow-xl transition-all hover:shadow-2xl">
+      {/* Badge & Like */}
+      <div className="absolute left-4 top-4 z-10">
+        {boat.available && (
+          <span className="rounded-full bg-green-500 px-3 py-1 text-xs font-semibold text-white shadow">
+            Sofort buchbar
+          </span>
+        )}
+      </div>
+      <button
+        className="absolute right-4 top-4 z-10 rounded-full bg-white p-2 shadow transition hover:bg-gray-50"
+        aria-label="Zu Favoriten"
       >
-        {images.map((src, i) => (
-          <div
-            key={i}
-            className={`absolute inset-0 transition-transform duration-500 ease-out ${
-              i === current
-                ? "translate-x-0"
-                : i < current
-                ? "-translate-x-full"
-                : "translate-x-full"
-            }`}
-          >
-            <Image src={src} alt={boat.name} fill className="object-cover" />
+        <Heart size={20} className="text-gray-400" />
+      </button>
+
+      {/* Bild(er) mit Slider */}
+      <div className="relative h-48 w-full bg-gray-100">
+        <Image
+          src={images[current]}
+          alt={boat.name}
+          fill
+          className="object-cover transition"
+          sizes="(max-width: 768px) 100vw, 400px"
+        />
+        {/* Punkt-Indikator, nur wenn mehrere Bilder */}
+        {images.length > 1 && (
+          <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 space-x-2">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                className={`h-2 w-2 rounded-full transition-colors duration-300 ${i === current ? 'bg-brand' : 'bg-gray-300'}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setCurrent(i)
+                }}
+                tabIndex={-1}
+                aria-label={`Bild ${i + 1}`}
+              />
+            ))}
           </div>
-        ))}
-
-        {/* Pfeile nur auf Hover, stopPropagation verhindert Card-Navigation */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            prev();
-          }}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 transition-opacity duration-300 opacity-0 group-hover:opacity-100 md:flex"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            next();
-          }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-1 transition-opacity duration-300 opacity-0 group-hover:opacity-100 md:flex"
-        >
-          <ChevronRight size={20} />
-        </button>
-
-        {/* Punkt-Indikator */}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
-          {images.map((_, i) => (
-            <span
-              key={i}
-              className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                i === current ? "bg-brand" : "bg-gray-300"
-              }`}
-            />
-          ))}
-        </div>
+        )}
       </div>
 
       {/* Inhalt */}
-      <div className="p-4 space-y-2">
-        <h3 className="text-lg font-semibold text-gray-800">{boat.name}</h3>
-        <div className="flex items-center space-x-1 text-yellow-400">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Star
-              key={i}
-              size={16}
-              className={i < Math.floor(rating) ? "fill-current" : "text-gray-300"}
-            />
-          ))}
-          <span className="text-sm text-gray-600 ml-1">{rating.toFixed(1)}</span>
-        </div>
-        <div className="flex flex-wrap gap-2 text-sm">
-          {boat.type && (
-            <span className="bg-brand-light/20 text-brand px-2 py-0.5 rounded-md">
-              {boat.type}
+      <div className="px-6 pb-6 pt-4">
+        {/* Name & Bewertung in einer Zeile */}
+        <div className="mb-1 flex items-center justify-between gap-2">
+          <h3 className="text-base font-bold text-gray-800">
+            {boat.name || 'Bootsname fehlt'}
+          </h3>
+          <div className="flex items-center gap-0.5 font-medium text-yellow-500">
+            <Star size={16} className="fill-current" />
+            <span className="text-sm">
+              {rating > 0 ? rating.toFixed(1) : '–'}
             </span>
-          )}
-          {boat.location && (
-            <span className="flex items-center bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">
-              <MapPin size={14} className="mr-1" /> {boat.location}
-            </span>
-          )}
+            {reviews > 0 && (
+              <span className="ml-1 text-xs text-gray-400">({reviews})</span>
+            )}
+          </div>
         </div>
-        <div className="mt-2 text-brand font-bold">{boat.price} €/Tag</div>
+        {/* Ort */}
+        <div className="mb-2 flex items-center gap-1 text-sm text-gray-500">
+          <MapPin size={16} className="mr-1" />
+          {boat.location || '–'}
+          {boat.country && <span className="ml-1">, {boat.country}</span>}
+        </div>
+        {/* Features */}
+        <div className="mb-3 flex gap-4 text-sm text-gray-600">
+          <span className="flex items-center gap-1">
+            <Users size={16} />
+            {persons} Pers.
+          </span>
+          <span className="flex items-center gap-1">
+            <Zap size={16} />
+            {ps} PS
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock size={16} />
+            {length}
+          </span>
+        </div>
+        {/* Preis und Button */}
+        <div className="mt-3 flex items-end justify-between">
+          <div>
+            <span className="text-2xl font-bold text-brand">
+              {boat.price ? `€${boat.price}` : '–'}
+            </span>
+            <span className="ml-1 text-sm font-medium text-gray-400">/Tag</span>
+          </div>
+          <Link
+            href={`/boats/${boat.id}`}
+            className="flex items-center justify-center rounded-full bg-brand px-5 py-2 text-base font-semibold text-white shadow transition hover:bg-brand-light"
+          >
+            Details
+          </Link>
+        </div>
       </div>
     </div>
-  );
+  )
 }

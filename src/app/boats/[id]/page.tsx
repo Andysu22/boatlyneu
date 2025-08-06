@@ -1,292 +1,359 @@
-// src/app/boats/[id]/page.tsx
-"use client";
+'use client'
 
-import { useState } from "react";
-import Image from "next/image";
-import { useParams } from "next/navigation";
-import { DayPicker, DateRange } from "react-day-picker";
-import "react-day-picker/dist/style.css";
-import {
-  Star,
-  MapPin,
-  Users,
-  Home,
-  Bath,
-  Music,
-  Wifi,
-} from "lucide-react";
-import type { Boat as BoatCardType } from "@/components/BoatCard";
+import { useState } from 'react'
+import Image from 'next/image'
+import { useParams } from 'next/navigation'
+import { DayPicker, DateRange } from 'react-day-picker'
+import 'react-day-picker/dist/style.css'
+import { Star, MapPin, Users, Ruler, Zap, Sun, Music, Wifi } from 'lucide-react'
 
-interface Review {
-  id: string;
-  name: string;
-  avatar_url: string;
-  rating: number;
-  date: string;
-  comment: string;
+// Dummy-Boat-Type für das Beispiel
+type Boat = {
+  id: string
+  name: string
+  location: string
+  country: string
+  type: string
+  price: number
+  length: number
+  power: number
+  capacity: number
+  isAvailable: boolean
+  images: string[]
+  description: string
+  amenities: string[]
+  rating: number
+  ratingCount: number
+}
+
+const BOATS: Boat[] = [
+  {
+    id: '1',
+    name: 'Sea Explorer Premium',
+    location: 'Mallorca',
+    country: 'Spanien',
+    type: 'Yacht',
+    price: 450,
+    length: 15.5,
+    power: 350,
+    capacity: 8,
+    isAvailable: true,
+    images: ['/images/boat1.jpg', '/images/boat2.jpg', '/images/boat3.jpg'],
+    description:
+      'Luxuriöse Yacht mit allem Komfort für unvergessliche Momente auf dem Wasser. Perfekt für Familienausflüge oder romantische Trips.',
+    amenities: [
+      'GPS Navigation',
+      'Klimaanlage',
+      'Bluetooth Audio',
+      'Sonnendeck',
+    ],
+    rating: 4.8,
+    ratingCount: 12,
+  },
+  // weitere Boote...
+]
+
+const AMENITY_ICONS: Record<string, JSX.Element> = {
+  'GPS Navigation': <MapPin size={20} />,
+  Klimaanlage: <Sun size={20} />,
+  'Bluetooth Audio': <Music size={20} />,
+  Sonnendeck: <Sun size={20} />,
+  WLAN: <Wifi size={20} />,
 }
 
 export default function BoatPage() {
-  const { id } = useParams();
+  const { id } = useParams()
+  const boat = BOATS.find((b) => b.id === id) || BOATS[0]
 
-  // Dummy-Boote
-  const sampleBoats: BoatCardType[] = [
-    { id: "1", name: "Bayliner VR5", type: "Motorboot", price: 180, location: "Hamburg", image_url: null },
-    { id: "2", name: "Bavaria Cruiser 46", type: "Segelboot", price: 490, location: "Kiel", image_url: null },
-    { id: "3", name: "Zodiac Medline 580", type: "RIB", price: 220, location: "Rostock", image_url: null },
-    { id: "4", name: "Sunseeker Predator", type: "Yacht", price: 1200, location: "München", image_url: null },
-  ];
-  const boat = sampleBoats.find((b) => b.id === id) ?? sampleBoats[0];
+  // Image Modal (Lightbox)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIdx, setLightboxIdx] = useState(0)
 
-  // Galerie-Bilder
-  const idx = (parseInt(boat.id, 10) % 3) + 1;
-  const fallback = [
-    `/images/boat${idx}.jpg`,
-    `/images/boat${(idx % 3) + 1}.jpg`,
-    `/images/boat${((idx + 1) % 3) + 1}.jpg`,
-  ];
-  const images = boat.image_url
-    ? [boat.image_url, ...fallback.slice(0, 2)]
-    : fallback;
-
-  // Tabs & Reviews
-  const [activeTab, setActiveTab] = useState<"details" | "reviews">("details");
-  const reviews: Review[] = [
-    { id: "r1", name: "Alice Müller", avatar_url: "/avatar-placeholder.png", rating: 5, date: "2025-07-15", comment: "Tolles Boot, super sauber und einfacher Check-in!" },
-    { id: "r2", name: "Boris Schmidt", avatar_url: "/avatar-placeholder.png", rating: 4, date: "2025-06-30", comment: "Schönes Boot, aber etwas kleiner als erwartet." },
-    { id: "r3", name: "Clara Weber", avatar_url: "/avatar-placeholder.png", rating: 5, date: "2025-05-20", comment: "Perfekter Tag auf dem Wasser, sehr empfehlenswert!" },
-  ];
-
-  // Lightbox State
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIdx, setLightboxIdx] = useState(0);
-  const openLightbox = (i: number) => { setLightboxIdx(i); setLightboxOpen(true); };
-  const closeLightbox = () => setLightboxOpen(false);
-  const prevImage = () => setLightboxIdx((i) => (i - 1 + images.length) % images.length);
-  const nextImage = () => setLightboxIdx((i) => (i + 1) % images.length);
-
-  // Calendar Modal State
-  const [showCal, setShowCal] = useState(false);
-  const [range, setRange] = useState<DateRange>({ from: undefined, to: undefined });
-
-  // Dummy-Ausstattung
-  const features = [
-    { icon: <Users size={20} />, label: "6 Personen" },
-    { icon: <Home size={20} />, label: "2 Kabinen" },
-    { icon: <Bath size={20} />, label: "1 Bad" },
-    { icon: <Music size={20} />, label: "Stereoanlage" },
-    { icon: <Wifi size={20} />, label: "WLAN" },
-  ];
+  // Kalender
+  const [showCal, setShowCal] = useState(false)
+  const [range, setRange] = useState<DateRange>({
+    from: undefined,
+    to: undefined,
+  })
 
   return (
-    <div className="pb-24">
-      <div className="max-w-7xl mx-auto p-6 space-y-12">
-        {/* Galerie & Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#f7fafd] via-[#ecf4fc] to-[#e4f0fa] py-12">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 lg:flex-row">
+        {/* Linke Seite: Bilder + Text */}
+        <div className="min-w-0 flex-1">
           {/* Galerie */}
-          <div>
-            <div className="relative h-96 rounded-xl overflow-hidden">
-              <Image src={images[0]} alt={boat.name} fill className="object-cover" />
+          <div className="mb-6 flex gap-4">
+            <div className="flex-1">
+              <div
+                className="group relative h-72 cursor-pointer overflow-hidden rounded-2xl"
+                onClick={() => {
+                  setLightboxIdx(0)
+                  setLightboxOpen(true)
+                }}
+              >
+                <Image
+                  src={boat.images[0]}
+                  alt={boat.name}
+                  fill
+                  className="object-cover transition group-hover:scale-105"
+                  priority
+                />
+              </div>
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              {images.map((src, i) => (
-                <button
+            <div className="flex flex-col gap-4">
+              {[1, 2].map((i) => (
+                <div
                   key={i}
-                  onClick={() => openLightbox(i)}
-                  className="relative h-24 rounded-lg overflow-hidden focus:outline-none"
+                  className="group relative h-32 w-36 cursor-pointer overflow-hidden rounded-2xl"
+                  onClick={() => {
+                    setLightboxIdx(i)
+                    setLightboxOpen(true)
+                  }}
                 >
-                  <Image src={src} alt={boat.name} fill className="object-cover" />
-                </button>
+                  <Image
+                    src={boat.images[i]}
+                    alt={boat.name}
+                    fill
+                    className="object-cover transition group-hover:scale-105"
+                  />
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Details */}
-          <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-800">{boat.name}</h1>
+          {/* Titel und Location */}
+          <div className="mb-2 flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
+              {boat.name}
+            </h1>
+            <span className="hidden md:inline-block">
+              {boat.isAvailable && (
+                <span className="ml-2 rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-white">
+                  Sofort buchbar
+                </span>
+              )}
+            </span>
+          </div>
+          <div className="mb-3 flex items-center text-gray-500">
+            <MapPin className="mr-1 h-5 w-5" />
+            {boat.location}, {boat.country}
+          </div>
 
-            {/* Rating & Location */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1 text-yellow-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={20} className={i < Math.floor(reviews[0].rating) ? "fill-current" : "text-gray-300"} />
-                ))}
-                <span className="text-gray-600 text-sm">({reviews.length} Bewertungen)</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <MapPin size={18} className="mr-1" /> {boat.location}
-              </div>
-            </div>
-
-            {/* Ausstattung */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {features.map((f, i) => (
-                <div key={i} className="flex items-center space-x-2 text-gray-700">
-                  {f.icon}
-                  <span className="text-sm">{f.label}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Preis & Buchen */}
-            <div className="bg-white shadow-lg rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div>
-                <span className="block text-sm text-gray-500 mb-1">Preis pro Tag</span>
-                <span className="text-3xl font-bold text-brand">{boat.price} €/Tag</span>
-              </div>
-              <button className="bg-brand text-white px-8 py-4 rounded-xl text-lg hover:bg-brand-light transition-all duration-200">
-                Jetzt buchen
-              </button>
-            </div>
-
-            {/* Kalender-Button */}
-            <div>
-              <span className="text-sm text-gray-500 block mb-2">Verfügbarkeit prüfen</span>
-              <button
-                onClick={() => setShowCal(true)}
-                className="w-full sm:w-auto bg-white border border-gray-200 rounded-lg px-4 py-2 shadow hover:shadow-md transition"
-              >
-                {range.from && range.to
-                  ? `${range.from.toLocaleDateString()} – ${range.to.toLocaleDateString()}`
-                  : "Datum wählen"}
-              </button>
-            </div>
-
-            {/* Beschreibung */}
-            {activeTab === "details" && (
-              <p className="mt-6 text-gray-700 leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed suscipit commodo purus, a facilisis nulla consectetur at...
-              </p>
+          {/* Features */}
+          <div className="mb-4 flex flex-wrap gap-6 text-base text-gray-600">
+            <span className="flex items-center">
+              <Users className="mr-1 h-5 w-5" />
+              {boat.capacity} Personen
+            </span>
+            <span className="flex items-center">
+              <Ruler className="mr-1 h-5 w-5" />
+              {boat.length}m
+            </span>
+            <span className="flex items-center">
+              <Zap className="mr-1 h-5 w-5" />
+              {boat.power} PS
+            </span>
+            <span className="ml-2 flex items-center text-yellow-500">
+              <Star className="mr-1 h-5 w-5 fill-current" />
+              <span className="font-bold text-gray-900">
+                {boat.rating.toFixed(1)}
+              </span>
+              <span className="ml-1 text-gray-500">
+                ({boat.ratingCount} Bewertungen)
+              </span>
+            </span>
+          </div>
+          {/* Boot-Typ + Badge */}
+          <div className="mb-5 flex gap-2">
+            <span className="rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-800">
+              {boat.type}
+            </span>
+            {boat.isAvailable && (
+              <span className="rounded-full bg-emerald-500 px-3 py-1 text-xs font-semibold text-white">
+                Sofort buchbar
+              </span>
             )}
           </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="max-w-7xl mx-auto">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab("details")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "details"
-                    ? "border-brand text-brand"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Details
-              </button>
-              <button
-                onClick={() => setActiveTab("reviews")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "reviews"
-                    ? "border-brand text-brand"
-                    : "border-transparent text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                Bewertungen
-              </button>
-            </nav>
+          {/* Beschreibung */}
+          <div className="mb-7">
+            <h3 className="mb-2 font-semibold text-gray-900">Beschreibung</h3>
+            <p className="text-gray-700">{boat.description}</p>
           </div>
-          {activeTab === "reviews" && (
-            <div className="mt-6 space-y-6">
-              {reviews.map((rev) => (
-                <div key={rev.id} className="flex items-start space-x-4 bg-white p-4 rounded-lg shadow">
-                  <Image src={rev.avatar_url} alt={rev.name} width={48} height={48} className="rounded-full" />
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <p className="font-semibold">{rev.name}</p>
-                      <span className="text-sm text-gray-500">{rev.date}</span>
-                    </div>
-                    <div className="flex items-center space-x-1 text-yellow-400 mt-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} size={16} className={i < rev.rating ? "fill-current" : "text-gray-300"} />
-                      ))}
-                    </div>
-                    <p className="mt-2 text-gray-700">{rev.comment}</p>
-                  </div>
-                </div>
+          {/* Ausstattung */}
+          <div className="mb-7">
+            <h3 className="mb-2 font-semibold text-gray-900">Ausstattung</h3>
+            <div className="flex flex-wrap gap-8 text-gray-700">
+              {boat.amenities.map((a, i) => (
+                <span key={i} className="flex items-center gap-2">
+                  {AMENITY_ICONS[a] || <Sun size={20} />}
+                  {a}
+                </span>
               ))}
             </div>
-          )}
+          </div>
+          {/* Bewertungen */}
+          <div className="mb-7">
+            <h3 className="mb-3 flex items-center font-semibold text-gray-900">
+              <Star className="mr-2 h-5 w-5 fill-current text-yellow-500" />
+              Bewertungen
+              <span className="ml-2 rounded-full bg-gray-100 px-2 text-sm font-medium">
+                {boat.rating.toFixed(1)} ★ ({boat.ratingCount})
+              </span>
+            </h3>
+            <div className="rounded-xl border bg-white p-6 text-center font-medium text-gray-500">
+              Noch keine Bewertungen
+              <div className="mt-2 text-xs text-gray-400">
+                Seien Sie der Erste, der dieses Boot bewertet.
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Rechte Seite: Buchungsbox */}
+        <aside className="w-full shrink-0 lg:w-[360px]">
+          <div className="sticky top-10 rounded-2xl border border-gray-100 bg-white p-6 shadow-xl">
+            <div className="mb-2 flex items-end gap-2">
+              <span className="text-3xl font-bold text-gray-900">
+                €{boat.price.toFixed(2)}
+              </span>
+              <span className="text-base text-gray-500">/Tag</span>
+            </div>
+            {/* Kalender/Inputs */}
+            <div className="mb-4 flex gap-3">
+              <div className="flex-1">
+                <label className="mb-1 block text-xs font-medium text-gray-500">
+                  Check-in
+                </label>
+                <button
+                  type="button"
+                  className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-left text-base text-gray-900"
+                  onClick={() => setShowCal(true)}
+                >
+                  {range.from ? range.from.toLocaleDateString() : 'tt.mm.jjjj'}
+                </button>
+              </div>
+              <div className="flex-1">
+                <label className="mb-1 block text-xs font-medium text-gray-500">
+                  Check-out
+                </label>
+                <button
+                  type="button"
+                  className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-left text-base text-gray-900"
+                  onClick={() => setShowCal(true)}
+                >
+                  {range.to ? range.to.toLocaleDateString() : 'tt.mm.jjjj'}
+                </button>
+              </div>
+            </div>
+            {/* Gäste */}
+            <div className="mb-3">
+              <label className="mb-1 block text-xs font-medium text-gray-500">
+                Gäste
+              </label>
+              <select className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-gray-900">
+                {[...Array(boat.capacity)].map((_, i) => (
+                  <option key={i}>
+                    {i + 1} {i === 0 ? 'Gast' : 'Gäste'}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Nachricht */}
+            <div className="mb-3">
+              <label className="mb-1 block text-xs font-medium text-gray-500">
+                Nachricht (optional)
+              </label>
+              <input
+                type="text"
+                className="w-full rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-gray-900"
+                placeholder="Besondere Wünsche oder Fragen..."
+              />
+            </div>
+            <button
+              className="mb-2 w-full rounded-lg bg-brand py-3 text-lg font-semibold text-white shadow transition hover:bg-brand-dark"
+              disabled
+            >
+              Jetzt buchen
+            </button>
+            <div className="mb-2 text-center text-xs text-gray-400">
+              Du wirst noch nicht belastet
+            </div>
+            <button className="w-full rounded-lg border border-gray-200 bg-gray-100 py-2 font-medium text-gray-700 transition hover:bg-gray-200">
+              Eigentümer kontaktieren
+            </button>
+          </div>
+        </aside>
       </div>
 
-      {/* Lightbox */}
+      {/* Lightbox Modal */}
       {lightboxOpen && (
         <div
-    className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 sm:p-8"
-    onClick={closeLightbox}
-  >
-    {/* Wrapper für das Bild */}
-    <div
-      className="relative w-full max-w-3xl"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {/* Close-Button */}
-      <button
-        onClick={closeLightbox}
-        className="absolute top-4 right-4 text-white text-2xl hover:text-gray-300"
-      >
-        ×
-      </button>
-
-      {/* Großes Bild */}
-      <Image
-        src={images[lightboxIdx]}
-        alt={`Bild ${lightboxIdx + 1}`}
-        width={1200}
-        height={675}
-        className="w-full h-auto rounded-lg"
-      />
-
-      {/* Linker Pfeil */}
-      <button
-        onClick={prevImage}
-        className="absolute top-1/2 left-2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black/75"
-      >
-        ‹
-      </button>
-
-      {/* Rechter Pfeil */}
-      <button
-        onClick={nextImage}
-        className="absolute top-1/2 right-2 -translate-y-1/2 bg-black/50 p-2 rounded-full text-white hover:bg-black/75"
-      >
-        ›
-      </button>
-    </div>
-  </div>
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute right-4 top-4 text-2xl text-white hover:text-gray-300"
+              onClick={() => setLightboxOpen(false)}
+            >
+              ×
+            </button>
+            <Image
+              src={boat.images[lightboxIdx]}
+              alt={`Bild ${lightboxIdx + 1}`}
+              width={1200}
+              height={675}
+              className="h-auto w-full rounded-lg"
+            />
+            {/* Navigation */}
+            <button
+              onClick={() =>
+                setLightboxIdx(
+                  (i) => (i - 1 + boat.images.length) % boat.images.length,
+                )
+              }
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/75"
+            >
+              ‹
+            </button>
+            <button
+              onClick={() =>
+                setLightboxIdx((i) => (i + 1) % boat.images.length)
+              }
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/75"
+            >
+              ›
+            </button>
+          </div>
+        </div>
       )}
 
-      {/* Kalender-Modal */}
+      {/* Kalender Modal */}
       {showCal && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
           onClick={() => setShowCal(false)}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full"
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <DayPicker
               mode="range"
-              selected={range}
-              onSelect={(v) => setRange(v ?? { from: undefined, to: undefined })}
+              onSelect={(v) =>
+                setRange(v ?? { from: undefined, to: undefined })
+              }
               numberOfMonths={2}
               pagedNavigation
               fixedWeeks
-              className="react-day-picker rounded-lg overflow-hidden"
-              styles={{
-                caption:          { fontSize: "1.25rem", fontWeight: 600 },
-                head_cell:        { color: "#4A5568" },
-                day:              { borderRadius: "0.5rem" },
-                day_selected:     { backgroundColor: "var(--tw-color-brand)", color: "white" },
-                day_range_middle: { backgroundColor: "rgba(16, 185, 129, 0.2)" },
-              }}
+              required={false}
             />
             <button
               onClick={() => setShowCal(false)}
-              className="mt-4 bg-brand text-white px-6 py-3 rounded-lg w-full hover:bg-brand-light transition"
+              className="mt-4 w-full rounded-lg bg-brand px-6 py-3 text-white transition hover:bg-brand-light"
             >
               Fertig
             </button>
@@ -294,5 +361,5 @@ export default function BoatPage() {
         </div>
       )}
     </div>
-  );
+  )
 }

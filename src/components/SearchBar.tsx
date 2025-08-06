@@ -1,95 +1,153 @@
-"use client";
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { MapPin, Users, Search, CalendarDays, Minus, Plus } from 'lucide-react'
+import { DayPicker, DateRange } from 'react-day-picker'
+import 'react-day-picker/dist/style.css'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import DatePicker from "react-datepicker";
-import { Search } from "lucide-react";
-import "react-datepicker/dist/react-datepicker.css";
-
-const boatTypes = ["Alle Typen", "Segelboot", "Motorboot", "RIB", "Yacht"];
-
-export default function SearchBar({ inHero = false }: { inHero?: boolean }) {
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState(boatTypes[0]);
-  const [dates, setDates] = useState<[Date|null,Date|null]>([null,null]);
-  const [start,end] = dates;
-  const router = useRouter();
+export default function ModernSearchBar() {
+  const router = useRouter()
+  const [location, setLocation] = useState('')
+  const [range, setRange] = useState<DateRange>({
+    from: undefined,
+    to: undefined,
+  })
+  const [showCal, setShowCal] = useState(false)
+  const [persons, setPersons] = useState(1)
 
   const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const params = new URLSearchParams();
-    if (query) params.set("query", query);
-    if (type !== boatTypes[0]) params.set("type", type);
-    if (start) params.set("from", start.toISOString().slice(0,10));
-    if (end)   params.set("to",   end.toISOString().slice(0,10));
-    router.push(`/search?${params.toString()}`);
-  };
-
-  const base = "rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand focus:outline-none";
-  const pad = inHero ? "px-8 py-4 text-lg" : "px-6 py-3";
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (location) params.set('location', location)
+    if (range.from) params.set('from', range.from.toISOString().slice(0, 10))
+    if (range.to) params.set('to', range.to.toISOString().slice(0, 10))
+    if (persons) params.set('persons', String(persons))
+    router.push(`/search?${params.toString()}`)
+  }
 
   return (
     <form
-  onSubmit={onSubmit}
-  className={`
-    bg-white p-6 shadow-lg rounded-3xl
-    grid gap-4
-    grid-cols-1
-    sm:grid-cols-2
-    lg:grid-cols-[2fr,1fr,1fr,auto]
-    animate-fadeIn
-    `}
-  style={{ maxWidth: inHero ? 900 : undefined, margin: "0 auto" }}
->
-  {/* Stichwort (2fr) */}
-  <div className="relative">
-    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-    <input
-      value={query}
-      onChange={e => setQuery(e.target.value)}
-      placeholder="Stichwort"
-      className={`rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand focus:outline-none ${
-        inHero ? "px-8 py-4" : "px-6 py-3"
-      } w-full pl-14`}
-    />
-  </div>
+      onSubmit={onSubmit}
+      className="
+        border-brand/15 relative z-10 
+        mx-auto flex w-full max-w-3xl flex-col 
+        items-stretch gap-2 rounded-full
+        border bg-white/95
+        px-2 py-2
+        shadow-lg transition hover:scale-[1.015]
+        hover:shadow-2xl sm:flex-row
+      "
+      style={{
+        marginTop: '2.5rem',
+        minHeight: 68,
+      }}
+    >
+      {/* Standort */}
+      <div className="flex flex-1 items-center gap-2 px-3">
+        <MapPin className="h-5 w-5 text-brand/70" />
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="Wohin möchtest du?"
+          className="flex-1 border-none bg-transparent text-base text-gray-700 outline-none placeholder:text-gray-400"
+          autoComplete="off"
+        />
+      </div>
 
-  {/* Boot-Typ (1fr) */}
-  <select
-    value={type}
-    onChange={e => setType(e.target.value)}
-    className={`rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand focus:outline-none ${
-      inHero ? "px-8 py-4" : "px-6 py-3"
-    } w-full bg-white`}
-  >
-    {boatTypes.map(t => (
-      <option key={t}>{t}</option>
-    ))}
-  </select>
+      {/* Trenner */}
+      <div className="my-auto hidden h-8 w-px bg-gray-200/80 sm:flex" />
 
-  {/* Zeitraum (1fr) */}
-  <DatePicker
-    selectsRange
-    startDate={start}
-    endDate={end}
-    onChange={d => setDates(d as [Date|null,Date|null])}
-    isClearable
-    placeholderText="Zeitraum"
-    className={`rounded-lg border border-slate-200 focus:ring-2 focus:ring-brand focus:outline-none ${
-      inHero ? "px-8 py-4" : "px-6 py-3"
-    } w-full`}
-    calendarClassName="react-datepicker"
-    popperProps={{ strategy: "fixed" }}
-    popperPlacement="bottom-start"
-  />
+      {/* Zeitraum */}
+      <div className="relative flex flex-1 items-center gap-2 px-3">
+        <CalendarDays className="h-5 w-5 text-brand/70" />
+        <button
+          type="button"
+          onClick={() => setShowCal(true)}
+          className="flex-1 border-none bg-transparent text-left text-base text-gray-700 outline-none placeholder:text-gray-400"
+          tabIndex={0}
+        >
+          {range.from && range.to
+            ? `${range.from.toLocaleDateString()} – ${range.to.toLocaleDateString()}`
+            : 'Zeitraum wählen'}
+        </button>
+        {/* Calendar Modal */}
+        {showCal && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
+            onClick={() => setShowCal(false)}
+          >
+            <div
+              className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <DayPicker
+                mode="range"
+                selected={range}
+                onSelect={(range) =>
+                  setRange(range ?? { from: undefined, to: undefined })
+                }
+                numberOfMonths={2}
+                pagedNavigation
+                fixedWeeks
+                required={false}
+              />
+              <button
+                type="button"
+                className="mt-4 w-full rounded-lg bg-brand px-6 py-3 text-white transition hover:bg-brand-light"
+                onClick={() => setShowCal(false)}
+              >
+                Fertig
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
 
-  {/* Button (auto) */}
-  <button
-    type="submit"
-    className="bg-brand text-white font-semibold py-3 px-6 hover:bg-brand-light transition rounded-lg"
-  >
-    Suchen
-  </button>
-</form>
-  );
+      {/* Trenner */}
+      <div className="my-auto hidden h-8 w-px bg-gray-200/80 sm:flex" />
+
+      {/* Personen */}
+      <div className="flex items-center gap-2 px-3">
+        <Users className="h-5 w-5 text-brand/70" />
+        <button
+          type="button"
+          onClick={() => setPersons((p) => Math.max(1, p - 1))}
+          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand transition hover:bg-brand-light"
+          tabIndex={-1}
+          aria-label="Personen verringern"
+        >
+          <Minus size={18} />
+        </button>
+        <span className="w-6 select-none text-center text-base font-semibold">
+          {persons}
+        </span>
+        <button
+          type="button"
+          onClick={() => setPersons((p) => Math.min(20, p + 1))}
+          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand transition hover:bg-brand-light"
+          tabIndex={-1}
+          aria-label="Personen erhöhen"
+        >
+          <Plus size={18} />
+        </button>
+      </div>
+
+      {/* Trenner */}
+      <div className="my-auto hidden h-8 w-px bg-gray-200/80 sm:flex" />
+
+      {/* Suchen */}
+      <button
+        type="submit"
+        className="
+          flex min-h-[48px] min-w-[120px] items-center gap-2 rounded-full bg-brand px-6 text-lg font-bold text-white
+          shadow transition hover:bg-brand-light
+        "
+        aria-label="Suchen"
+      >
+        <Search className="h-5 w-5" />
+        Suchen
+      </button>
+    </form>
+  )
 }

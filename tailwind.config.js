@@ -1,33 +1,37 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
-        brand: { DEFAULT: "#0d9488", light: "#14b8a6" },
-        accent: { DEFAULT: "#f59e0b", light: "#fbbf24" },
-        slate: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          400: "#94a3b8",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155",
-          800: "#1e293b",
-          900: "#0f172a",
-        },
+        brand: { DEFAULT: '#157aaf', light: '#3ec6e0', dark: '#005076' },
+        accent: { DEFAULT: '#fcd581', light: '#fffbe0' },
+        coral: '#ee6c4d',
+        water: '#a7d7e7',
+        navy: '#003049',
+        sky: '#e3f6fd',
+        white: '#fff',
       },
-      keyframes: {
-        fadeIn: { "0%": { opacity: 0 }, "100%": { opacity: 1 } },
-        slideUp: { "0%": { opacity: 0, transform: "translateY(10px)" }, "100%": { opacity: 1, transform: "translateY(0)" } },
+      // Optional: neue Schatten für “sonnige” Cards
+      boxShadow: {
+        marine:
+          '0 4px 32px 0 rgba(21,122,175,0.12), 0 1.5px 4px 0 rgba(30,64,175,0.06)',
       },
-      animation: {
-        fadeIn: "fadeIn 0.5s ease-out",
-        slideUp: "slideUp 0.5s ease-out",
+    },
+    keyframes: {
+      fadeIn: {
+        '0%': { opacity: 0 },
+        '100%': { opacity: 1 },
       },
+      slideUp: {
+        '0%': { opacity: 0, transform: 'translateY(24px)' },
+        '100%': { opacity: 1, transform: 'translateY(0)' },
+      },
+    },
+    animation: {
+      fadeIn: 'fadeIn 0.8s cubic-bezier(.46,.03,.52,.96) both',
+      slideUp: 'slideUp 0.9s cubic-bezier(.46,.03,.52,.96) both',
     },
   },
   plugins: [],
-};
+}

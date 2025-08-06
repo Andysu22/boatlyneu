@@ -19,8 +19,8 @@
     "types": ["@testing-library/jest-dom"]
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     "**/*.test.ts",
     "**/*.test.tsx",
     "types.d.ts",
