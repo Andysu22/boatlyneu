@@ -5,8 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "react-day-picker/dist/style.css";
+
 /* 2) React-Datepicker Basis-Styles */
-@import "react-datepicker/dist/react-datepicker.css";
+
 
 /* 3) Deine Overrides im utilities-Layer */
 @layer utilities {
