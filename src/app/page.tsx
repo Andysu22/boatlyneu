@@ -1,8 +1,7 @@
-// src/app/page.tsx
 import { cookies } from 'next/headers'
 import { createServerClient } from '@/utils/supabase'
 import Hero from '@/components/Hero'
-import BoatCard from '@/components/BoatCard' // ACHTUNG: Hier keine { ... } mehr!
+import BoatCard from '@/components/BoatCard'
 
 export default async function HomePage() {
   const supabase = createServerClient(cookies())
@@ -68,11 +67,14 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
-      <section className="bg-gray-50 px-4 py-20">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-2 sm:grid-cols-2 sm:px-6 md:grid-cols-3">
-          {boats.map((b) => (
-            <BoatCard key={b.id} boat={b} />
-          ))}
+      {/* Container zentriert, Cards responsiv */}
+      <section className="bg-gray-50 py-20">
+        <div className="mx-auto max-w-7xl px-2 sm:px-6">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+            {boats.map((b) => (
+              <BoatCard key={b.id} boat={b} />
+            ))}
+          </div>
         </div>
       </section>
     </>

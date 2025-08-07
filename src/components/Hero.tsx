@@ -3,17 +3,16 @@ import SearchBar from './SearchBar'
 
 export default function Hero() {
   return (
-    <section className="relative bg-gradient-to-b from-brand to-sky pt-14">
-      <div className="mx-auto max-w-4xl px-4 py-20 text-center">
+    <section className="relative bg-gradient-to-b from-brand to-sky pb-12 pt-14 sm:pb-20">
+      <div className="mx-auto w-full max-w-none px-2 text-center">
         <h1 className="mb-4 text-4xl font-extrabold text-white drop-shadow md:text-5xl">
           Finde dein Traumboot am Meer
         </h1>
         <p className="mb-8 text-lg text-white/80">
           Online buchen – direkt am Wasser, egal ob Segel, Motor oder Yacht.
         </p>
-        <div className="mx-auto max-w-2xl">
-          <SearchBar />
-        </div>
+        {/* KEIN Container um SearchBar! */}
+        <SearchBar />
       </div>
 
       {/* Animierte Welle */}

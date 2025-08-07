@@ -66,16 +66,17 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
 
   const [current, setCurrent] = useState(0)
   const [isImageHovered, setIsImageHovered] = useState(false)
-  const touchStartX = useRef(0)
+  const touchStart = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
 
   // Favoriten-Handling
   const [isFavorite, setIsFavorite] = useState(false)
   const [animateHeart, setAnimateHeart] = useState(false)
   const [notification, setNotification] = useState<string | null>(null)
 
-  // Swipen
+  // Swipen nur bei echtem horizontalen Swipe
   function handleTouchStart(e: React.TouchEvent) {
-    touchStartX.current = e.changedTouches[0].screenX
+    const touch = e.changedTouches[0]
+    touchStart.current = { x: touch.screenX, y: touch.screenY }
   }
   function goPrev() {
     setCurrent(current > 0 ? current - 1 : images.length - 1)
@@ -84,11 +85,14 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
     setCurrent(current < images.length - 1 ? current + 1 : 0)
   }
   function handleTouchEnd(e: React.TouchEvent) {
-    const endX = e.changedTouches[0].screenX
-    const diff = touchStartX.current - endX
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) goNext()
-      if (diff < 0) goPrev()
+    const touch = e.changedTouches[0]
+    const diffX = touch.screenX - touchStart.current.x
+    const diffY = touch.screenY - touchStart.current.y
+
+    // Swipe nur, wenn horizontale Bewegung viel größer ist als vertikal und Threshold groß genug
+    if (Math.abs(diffX) > 60 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+      if (diffX < 0) goNext() // links
+      if (diffX > 0) goPrev() // rechts
     }
   }
 
@@ -141,9 +145,11 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
       </div>
       {/* Herz */}
       <button
-        className="absolute right-4 top-4 z-10 flex items-center justify-center p-1 transition"
+        type="button"
+        className="absolute right-4 top-4 z-10 flex items-center justify-center p-1 transition focus:outline-none"
         aria-label="Zu Favoriten"
         onClick={handleFavorite}
+        tabIndex={0}
         style={{ background: 'transparent' }}
       >
         <Heart
@@ -168,23 +174,26 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
           className="object-cover transition"
           sizes="(max-width: 640px) 100vw, 380px"
           priority
+          draggable={false}
         />
         {/* Swipe-Buttons nur beim Hover über das Bild */}
         {isImageHovered && images.length > 1 && (
           <>
             <button
-              className="absolute left-2 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 md:flex"
+              type="button"
+              tabIndex={-1}
+              className="absolute left-2 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 focus:outline-none md:flex"
               onClick={goPrev}
               aria-label="Vorheriges Bild"
-              tabIndex={0}
             >
               <ChevronLeft size={20} />
             </button>
             <button
-              className="absolute right-2 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 md:flex"
+              type="button"
+              tabIndex={-1}
+              className="absolute right-2 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 focus:outline-none md:flex"
               onClick={goNext}
               aria-label="Nächstes Bild"
-              tabIndex={0}
             >
               <ChevronRight size={20} />
             </button>
@@ -195,13 +204,15 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
             {images.map((_, i) => (
               <button
                 key={i}
+                type="button"
+                tabIndex={-1}
                 className={`h-2 w-2 rounded-full border transition-colors duration-300 ${i === current ? 'border-cyan-600 bg-cyan-500' : 'border-gray-300 bg-gray-300'}`}
                 onClick={(e) => {
                   e.stopPropagation()
                   setCurrent(i)
                 }}
-                tabIndex={-1}
                 aria-label={`Bild ${i + 1}`}
+                style={{ outline: 'none' }}
               />
             ))}
           </div>
@@ -252,8 +263,9 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
           </div>
           <Link
             href={`/boats/${boat.id}`}
-            className="flex items-center justify-center rounded-full bg-cyan-500 px-6 py-2 text-base font-semibold text-white shadow transition hover:bg-cyan-600"
+            className="flex items-center justify-center rounded-full bg-cyan-500 px-6 py-2 text-base font-semibold text-white shadow transition hover:bg-cyan-600 focus:outline-none"
             style={{ minWidth: 110 }}
+            tabIndex={0}
           >
             Details
           </Link>

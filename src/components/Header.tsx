@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { User } from '@supabase/supabase-js'
 import { ChevronDown, LogOut, UserCircle, LayoutDashboard } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
@@ -14,7 +15,7 @@ export default function Header() {
     lastname?: string
   } | null>(null)
   const [openMenu, setOpenMenu] = useState(false)
-
+  const router = useRouter()
   const supabase = createClientComponentClient()
 
   useEffect(() => {
@@ -25,29 +26,36 @@ export default function Header() {
   }, [])
 
   useEffect(() => {
-    // Check User (Client-side)
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user || null)
-      if (data.user) {
-        // Lade Profil aus Tabelle 'profiles'
-        supabase
-          .from('profiles')
-          .select('firstname, lastname')
-          .eq('id', data.user.id)
-          .single()
-          .then(({ data }) => {
-            setProfile(data || null)
-          })
-      }
+    // User-State holen & updaten, auch nach Auth-Events!
+    const getUserAndProfile = () => {
+      supabase.auth.getUser().then(({ data }) => {
+        setUser(data.user || null)
+        if (data.user) {
+          supabase
+            .from('profiles')
+            .select('firstname, lastname')
+            .eq('id', data.user.id)
+            .single()
+            .then(({ data }) => setProfile(data || null))
+        }
+      })
+    }
+    getUserAndProfile()
+    const { data: authListener } = supabase.auth.onAuthStateChange(() => {
+      getUserAndProfile()
+      router.refresh() // Sofort Navbar aktualisieren!
     })
-  }, [])
+    return () => {
+      authListener?.subscription?.unsubscribe()
+    }
+  }, [router, supabase])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
     setUser(null)
     setProfile(null)
     setOpenMenu(false)
-    window.location.href = '/' // Redirect nach Logout
+    window.location.href = '/'
   }
 
   return (
@@ -96,8 +104,9 @@ export default function Header() {
           ) : (
             <div className="relative">
               <button
-                className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 font-semibold text-slate-700 shadow transition hover:bg-slate-200"
+                className="flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 font-semibold text-slate-700 shadow transition hover:bg-slate-200 focus:outline-none"
                 onClick={() => setOpenMenu((v) => !v)}
+                tabIndex={0}
               >
                 <UserCircle size={22} className="text-brand" />
                 <span>
@@ -123,7 +132,7 @@ export default function Header() {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2 border-t px-4 py-3 text-red-500 hover:bg-red-50"
+                    className="flex w-full items-center gap-2 border-t px-4 py-3 text-red-500 hover:bg-red-50 focus:outline-none"
                   >
                     <LogOut size={18} /> Logout
                   </button>

@@ -25,46 +25,47 @@ export default function ModernSearchBar() {
     router.push(`/search?${params.toString()}`)
   }
 
+  // Responsives Grid für Mobile/Desktop
   return (
     <form
       onSubmit={onSubmit}
       className="
-        relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-2 
-        rounded-2xl border border-brand/10 bg-white/95 px-2 
-        py-3 shadow-md sm:flex-row sm:gap-0 sm:rounded-full sm:shadow-lg
+        relative mx-auto flex w-full max-w-xl
+        flex-col
+        gap-3 rounded-2xl
+        border border-gray-200 bg-white/95 p-3
+        shadow-xl sm:max-w-2xl
+        sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-2 md:max-w-3xl
+        lg:max-w-5xl
       "
-      style={{ minHeight: 56 }}
+      style={{ minHeight: 64, marginTop: '2.5rem' }}
     >
       {/* Standort */}
-      <div className="flex flex-1 items-center gap-2 px-3">
+      <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-100 bg-white p-3 sm:rounded-full sm:border-0">
         <MapPin className="h-5 w-5 text-brand/70" />
         <input
           type="text"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          placeholder="Wohin möchtest du?"
+          placeholder="Ort oder Region"
           className="flex-1 border-none bg-transparent text-base text-gray-700 outline-none placeholder:text-gray-400"
           autoComplete="off"
         />
       </div>
 
-      {/* Trenner */}
-      <div className="my-auto hidden h-8 w-px bg-gray-200/80 sm:flex" />
-
       {/* Zeitraum */}
-      <div className="relative flex flex-1 items-center gap-2 px-3">
+      <div className="flex flex-1 items-center gap-2 rounded-xl border border-gray-100 bg-white p-3 sm:mx-2 sm:rounded-full sm:border-0 sm:border-l">
         <CalendarDays className="h-5 w-5 text-brand/70" />
         <button
           type="button"
           onClick={() => setShowCal(true)}
-          className="flex-1 border-none bg-transparent text-left text-base text-gray-700 outline-none placeholder:text-gray-400"
+          className="flex-1 bg-transparent text-left text-base text-gray-700 outline-none placeholder:text-gray-400"
           tabIndex={0}
         >
           {range.from && range.to
             ? `${range.from.toLocaleDateString()} – ${range.to.toLocaleDateString()}`
-            : 'Zeitraum wählen'}
+            : 'Datum auswählen'}
         </button>
-        {/* Calendar Modal */}
         {showCal && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
@@ -80,7 +81,7 @@ export default function ModernSearchBar() {
                 onSelect={(range) =>
                   setRange(range ?? { from: undefined, to: undefined })
                 }
-                numberOfMonths={1}
+                numberOfMonths={window.innerWidth < 640 ? 1 : 2}
                 pagedNavigation
                 fixedWeeks
                 required={false}
@@ -97,16 +98,13 @@ export default function ModernSearchBar() {
         )}
       </div>
 
-      {/* Trenner */}
-      <div className="my-auto hidden h-8 w-px bg-gray-200/80 sm:flex" />
-
       {/* Personen */}
-      <div className="flex items-center gap-2 px-3">
+      <div className="flex items-center gap-2 rounded-xl border border-gray-100 bg-white p-3 sm:rounded-full sm:border-0">
         <Users className="h-5 w-5 text-brand/70" />
         <button
           type="button"
           onClick={() => setPersons((p) => Math.max(1, p - 1))}
-          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand transition hover:bg-brand-light"
+          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand outline-none transition hover:bg-brand-light focus:ring-0"
           tabIndex={-1}
           aria-label="Personen verringern"
         >
@@ -118,7 +116,7 @@ export default function ModernSearchBar() {
         <button
           type="button"
           onClick={() => setPersons((p) => Math.min(20, p + 1))}
-          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand transition hover:bg-brand-light"
+          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand outline-none transition hover:bg-brand-light focus:ring-0"
           tabIndex={-1}
           aria-label="Personen erhöhen"
         >
@@ -126,20 +124,24 @@ export default function ModernSearchBar() {
         </button>
       </div>
 
-      {/* Trenner */}
-      <div className="my-auto hidden h-8 w-px bg-gray-200/80 sm:flex" />
-
-      {/* Suchen */}
+      {/* Suchen-Button */}
       <button
         type="submit"
         className="
-          mt-2 flex min-h-[48px] w-full items-center gap-2 rounded-full bg-brand px-6 text-lg font-bold text-white
-          shadow transition hover:bg-brand-light sm:mt-0 sm:w-auto
+          mt-2 flex
+          w-full items-center justify-center
+          gap-2 rounded-full bg-brand px-7
+          py-3 text-lg font-bold text-white shadow transition hover:bg-brand-light
+          focus:outline-none sm:ml-3 sm:mt-0
+          sm:w-auto
         "
         aria-label="Suchen"
+        style={{
+          boxShadow: '0 6px 32px 0 rgba(22, 136, 197, 0.10)',
+        }}
       >
         <Search className="h-5 w-5" />
-        Suchen
+        <span className="hidden sm:block">Suchen</span>
       </button>
     </form>
   )
