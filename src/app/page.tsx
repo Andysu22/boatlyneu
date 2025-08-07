@@ -2,7 +2,7 @@
 import { cookies } from 'next/headers'
 import { createServerClient } from '@/utils/supabase'
 import Hero from '@/components/Hero'
-import BoatCard, { Boat } from '@/components/BoatCard'
+import BoatCard from '@/components/BoatCard' // ACHTUNG: Hier keine { ... } mehr!
 
 export default async function HomePage() {
   const supabase = createServerClient(cookies())
@@ -12,7 +12,7 @@ export default async function HomePage() {
     .limit(6)
     .order('inserted_at', { ascending: false })
 
-  const sample: Boat[] = [
+  const sample = [
     {
       id: '1',
       name: 'Bayliner VR5',
@@ -63,7 +63,7 @@ export default async function HomePage() {
     },
   ]
 
-  const boats: Boat[] = data && data.length > 0 ? data : sample
+  const boats = data && data.length > 0 ? data : sample
 
   return (
     <>
