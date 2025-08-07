@@ -12,7 +12,7 @@ export default function Hero() {
           Online buchen – direkt am Wasser, egal ob Segel, Motor oder Yacht.
         </p>
         <div className="mx-auto max-w-2xl">
-          <SearchBar inHero />
+          <SearchBar />
         </div>
       </div>
 
