@@ -13,9 +13,7 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true, // Bessere Dev-Fehlererkennung
-  experimental: {
-    appDir: true,
-  },
+  experimental: {},
 }
 
 module.exports = nextConfig
