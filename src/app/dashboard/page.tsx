@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import { Plus } from 'lucide-react'
 import BoatCard, { Boat } from '@/components/BoatCard'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export default function DashboardPage() {
   const [kpis] = useState({
@@ -96,6 +97,33 @@ export default function DashboardPage() {
           ))}
         </div>
       </section>
+    </div>
+  )
+}
+
+export function EmailVerifyStatus() {
+  const [verified, setVerified] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const supabase = createClientComponentClient()
+    supabase.auth.getUser().then(({ data }) => {
+      const user = data.user
+      setVerified(!!user?.email_confirmed_at)
+    })
+  }, [])
+
+  if (verified === null) return null
+  return (
+    <div className="mt-3">
+      {verified ? (
+        <span className="rounded-full bg-emerald-100 px-3 py-1 font-semibold text-emerald-800">
+          ✅ E-Mail bestätigt
+        </span>
+      ) : (
+        <span className="rounded-full bg-red-100 px-3 py-1 font-semibold text-red-800">
+          ❌ E-Mail nicht bestätigt
+        </span>
+      )}
     </div>
   )
 }

@@ -69,15 +69,10 @@ export default async function HomePage() {
     <>
       <Hero />
       <section className="bg-gray-50 px-4 py-20">
-        <div className="mx-auto max-w-7xl">
-          <h2 className="mb-8 text-3xl font-bold text-gray-800">
-            Beliebte Boote
-          </h2>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {boats.map((b) => (
-              <BoatCard key={b.id} boat={b} />
-            ))}
-          </div>
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-2 sm:grid-cols-2 sm:px-6 md:grid-cols-3">
+          {boats.map((b) => (
+            <BoatCard key={b.id} boat={b} />
+          ))}
         </div>
       </section>
     </>

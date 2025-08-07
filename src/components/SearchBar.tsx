@@ -29,18 +29,11 @@ export default function ModernSearchBar() {
     <form
       onSubmit={onSubmit}
       className="
-        border-brand/15 relative z-10 
-        mx-auto flex w-full max-w-3xl flex-col 
-        items-stretch gap-2 rounded-full
-        border bg-white/95
-        px-2 py-2
-        shadow-lg transition hover:scale-[1.015]
-        hover:shadow-2xl sm:flex-row
+        relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-2 
+        rounded-2xl border border-brand/10 bg-white/95 px-2 
+        py-3 shadow-md sm:flex-row sm:gap-0 sm:rounded-full sm:shadow-lg
       "
-      style={{
-        marginTop: '2.5rem',
-        minHeight: 68,
-      }}
+      style={{ minHeight: 56 }}
     >
       {/* Standort */}
       <div className="flex flex-1 items-center gap-2 px-3">
@@ -87,7 +80,7 @@ export default function ModernSearchBar() {
                 onSelect={(range) =>
                   setRange(range ?? { from: undefined, to: undefined })
                 }
-                numberOfMonths={2}
+                numberOfMonths={1}
                 pagedNavigation
                 fixedWeeks
                 required={false}
@@ -140,8 +133,8 @@ export default function ModernSearchBar() {
       <button
         type="submit"
         className="
-          flex min-h-[48px] min-w-[120px] items-center gap-2 rounded-full bg-brand px-6 text-lg font-bold text-white
-          shadow transition hover:bg-brand-light
+          mt-2 flex min-h-[48px] w-full items-center gap-2 rounded-full bg-brand px-6 text-lg font-bold text-white
+          shadow transition hover:bg-brand-light sm:mt-0 sm:w-auto
         "
         aria-label="Suchen"
       >

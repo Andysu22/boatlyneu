@@ -36,7 +36,7 @@ interface BoatCardProps {
 }
 
 export default function BoatCard({ boat, onDetails }: BoatCardProps) {
-  // Dummywerte für Demos (du kannst sie in echten Daten ersetzen)
+  // Dummywerte für Demos
   const demo: Partial<Boat> = {
     rating: 4.8,
     reviews: 12,
@@ -47,7 +47,6 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
     tags: ['Sofort buchbar', 'Top bewertet'],
     country: 'Spanien',
   }
-  // Fallbacks
   const rating = typeof boat.rating === 'number' ? boat.rating : demo.rating!
   const reviews =
     typeof boat.reviews === 'number' ? boat.reviews : demo.reviews!
@@ -105,7 +104,6 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
   }
 
   // Card-Komma-Logik:
-  // Ort + (optional) Komma + Land
   function renderLocation() {
     if (boat.location && country) {
       return (
@@ -121,7 +119,7 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
   }
 
   return (
-    <div className="relative flex w-[380px] flex-col overflow-hidden rounded-2xl bg-white font-sans shadow-lg hover:shadow-2xl">
+    <div className="relative mx-auto my-4 flex w-full max-w-[380px] flex-col overflow-hidden rounded-2xl bg-white font-sans shadow-lg hover:shadow-2xl sm:my-6">
       {/* Notification */}
       {notification && (
         <div className="animate-fade-in-out pointer-events-none fixed left-1/2 top-6 z-[9999] -translate-x-1/2 select-none rounded-full bg-gray-900 px-6 py-3 text-base font-semibold text-white shadow-xl">
@@ -157,7 +155,7 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
       </button>
       {/* Bild(er) */}
       <div
-        className="relative h-56 w-full select-none bg-gray-100"
+        className="relative h-56 w-full touch-pan-y select-none overflow-hidden rounded-t-2xl bg-gray-100"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onMouseEnter={() => setIsImageHovered(true)}
@@ -168,26 +166,27 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
           alt={boat.name}
           fill
           className="object-cover transition"
-          sizes="(max-width: 768px) 100vw, 410px"
+          sizes="(max-width: 640px) 100vw, 380px"
+          priority
         />
         {/* Swipe-Buttons nur beim Hover über das Bild */}
         {isImageHovered && images.length > 1 && (
           <>
             <button
-              className="absolute left-3 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 md:flex"
+              className="absolute left-2 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 md:flex"
               onClick={goPrev}
               aria-label="Vorheriges Bild"
               tabIndex={0}
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={20} />
             </button>
             <button
-              className="absolute right-3 top-1/2 z-20 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 md:flex"
+              className="absolute right-2 top-1/2 z-20 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 shadow hover:bg-gray-100 md:flex"
               onClick={goNext}
               aria-label="Nächstes Bild"
               tabIndex={0}
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={20} />
             </button>
           </>
         )}
@@ -209,7 +208,7 @@ export default function BoatCard({ boat, onDetails }: BoatCardProps) {
         )}
       </div>
       {/* Inhalt */}
-      <div className="px-6 pb-6 pt-4">
+      <div className="px-4 pb-5 pt-4 sm:px-6">
         <div className="mb-1 flex items-center justify-between gap-2">
           <h3 className="truncate text-base font-bold leading-tight text-gray-800">
             {boat.name || 'Bootsname fehlt'}
