@@ -2,18 +2,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['source.unsplash.com'],
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'source.unsplash.com',
-        port: '',
+        hostname: 'images.unsplash.com',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'source.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'mwvlybenpoccthbnchns.supabase.co', // <-- deine Supabase-Storage-Domain
+        pathname: '/storage/v1/object/public/**', // Pfad freigeben
       },
     ],
   },
-  reactStrictMode: true, // Bessere Dev-Fehlererkennung
-  experimental: {},
+  reactStrictMode: true,
 }
 
 module.exports = nextConfig

@@ -1,6 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
+  safelist: [
+    'bg-sky-400',
+    'bg-sky-200',
+    'text-white',
+    'text-sky-900',
+    'rounded-full',
+  ],
   theme: {
     extend: {
       colors: {
@@ -12,7 +19,6 @@ module.exports = {
         sky: '#e3f6fd',
         white: '#fff',
       },
-      // Optional: neue Schatten für “sonnige” Cards
       boxShadow: {
         marine:
           '0 4px 32px 0 rgba(21,122,175,0.12), 0 1.5px 4px 0 rgba(30,64,175,0.06)',
