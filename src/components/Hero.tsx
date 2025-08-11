@@ -1,33 +1,38 @@
 'use client'
-import SearchBar from './SearchBar'
+
+import SearchBar from '@/components/SearchBar'
 
 export default function Hero() {
   return (
-    <section className="relative bg-gradient-to-b from-brand to-sky pb-12 pt-14 sm:pb-20">
-      <div className="mx-auto w-full max-w-none px-2 text-center">
-        <h1 className="mb-4 text-4xl font-extrabold text-white drop-shadow md:text-5xl">
-          Finde dein Traumboot am Meer
-        </h1>
-        <p className="mb-8 text-lg text-white/80">
-          Online buchen – direkt am Wasser, egal ob Segel, Motor oder Yacht.
-        </p>
-        {/* KEIN Container um SearchBar! */}
-        <SearchBar />
-      </div>
+    <section className="relative overflow-hidden">
+      {/* Hintergrund-Gradient für Light/Dark */}
+      <div className="to-sky absolute inset-0 -z-10 bg-gradient-to-b from-brand dark:from-slate-900 dark:to-slate-800" />
 
-      {/* Animierte Welle */}
-      <div className="pointer-events-none absolute bottom-0 left-0 w-full overflow-hidden leading-none">
-        <svg
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-          className="h-20 w-full animate-fadeIn"
-        >
-          <path
-            d="M0,0V46.29c47.66,22,103.24,29.38,158,17.75C243.32,54.55,297.46,1.99,353,0c59-2.17,112.43,37.7,169,49.52,65.36,13.62,127.22-3.4,190-20.15C791.62,8.79,853.09-5.4,916,3.36c43.17,6.37,82.31,28.09,124,37.41,54.23,12.36,104-5.14,156-23.38V0Z"
-            fill="#fff"
-            className="animate-slideUp"
-          />
-        </svg>
+      <div className="mx-auto max-w-7xl px-4 pb-16 pt-24 sm:px-6 sm:pb-24 sm:pt-28">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="dark:bg-white/15 inline-flex items-center gap-2 rounded-full bg-black/10 px-3 py-1 text-xs font-semibold backdrop-blur">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            Jetzt neu: Live-Verfügbarkeit
+          </span>
+          <h1 className="mt-4 bg-gradient-to-b from-[rgb(var(--text))] to-[rgb(var(--text)/0.8)] bg-clip-text text-4xl font-extrabold leading-tight text-transparent md:text-6xl">
+            Dein <span className="text-yellow-400">Törn</span> beginnt hier
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-[rgb(var(--text-muted))]">
+            Yachten, Segler & Motorboote – smart vergleichen, sicher buchen.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-8 max-w-5xl">
+          <SearchBar />
+        </div>
+
+        <div className="mx-auto mt-6 flex max-w-3xl flex-wrap items-center justify-center gap-4 text-[rgb(var(--text-muted))]">
+          <span className="text-sm">Verifizierte Anbieter</span>
+          <span className="h-1 w-1 rounded-full bg-[rgb(var(--border))]" />
+          <span className="text-sm">Transparente Preise</span>
+          <span className="h-1 w-1 rounded-full bg-[rgb(var(--border))]" />
+          <span className="text-sm">Support am Wochenende</span>
+        </div>
       </div>
     </section>
   )

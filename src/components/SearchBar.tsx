@@ -11,7 +11,7 @@ import {
   Info,
 } from 'lucide-react'
 import { DayPicker, DateRange } from 'react-day-picker'
-import 'react-day-picker/dist/style.css'
+// CSS-Import entfernt – Styles kommen global über globals.css
 
 function formatDateInput(d?: Date) {
   if (!d) return ''
@@ -66,16 +66,10 @@ export default function ModernSearchBar() {
   const fromRef = useRef<HTMLInputElement>(null)
   const toRef = useRef<HTMLInputElement>(null)
 
-  // heute als Grenze für disabled
   const today = startOfDay(new Date())
-
-  // kontrollierter Monat (eigene Nav)
   const [month, setMonth] = useState<Date>(today)
-
-  // remount key, um Hover/Preview-State sicher zu resetten
   const [pickerKey, setPickerKey] = useState(0)
 
-  // kleine Notification im Kalender
   const [note, setNote] = useState<string | null>(null)
   function notify(msg: string) {
     setNote(msg)
@@ -98,7 +92,6 @@ export default function ModernSearchBar() {
     if (showCal) setMonth(range.from ?? today)
   }, [showCal]) // eslint-disable-line
 
-  // disabled-Check (hier: alles vor heute)
   function isDisabled(d?: Date) {
     if (!d) return true
     return startOfDay(d) < today
@@ -136,7 +129,6 @@ export default function ModernSearchBar() {
       }
       setRange((r) => {
         const updated: DateRange = { ...r, from: newFrom ?? undefined }
-        // Falls to vorhanden, aber vor from -> to anpassen (mind. +1 Tag, aber nicht in Vergangenheit)
         if (
           updated.from &&
           r.to &&
@@ -161,7 +153,6 @@ export default function ModernSearchBar() {
       }
       setRange((r) => {
         let updated: DateRange = { ...r, to: newTo ?? undefined }
-        // Wenn from gesetzt und to <= from → to mindestens +1 Tag nach from
         if (
           updated.from &&
           updated.to &&
@@ -176,25 +167,22 @@ export default function ModernSearchBar() {
       setPickerKey((k) => k + 1)
       if (newTo) {
         if (range.from) {
-          // Prüfen, ob Start- und Endmonat unterschiedlich sind
           const fromMonth = range.from.getMonth()
           const toMonth = newTo.getMonth()
           const fromYear = range.from.getFullYear()
           const toYear = newTo.getFullYear()
-
           if (fromMonth !== toMonth || fromYear !== toYear) {
-            setMonth(range.from) // ersten Monat auf Startdatum setzen
+            setMonth(range.from)
           } else {
-            setMonth(newTo) // gleiches Monat/Jahr → Enddatum anzeigen
+            setMonth(newTo)
           }
         } else {
-          setMonth(newTo) // falls noch kein Startdatum vorhanden
+          setMonth(newTo)
         }
       }
     }
   }
 
-  // Klick-Logik + Remount beim Range-Neustart (verhindert „klebende“ Markierungen)
   function handleDayClick(day: Date) {
     if (isDisabled(day)) {
       notify('Dieser Tag ist nicht verfügbar.')
@@ -290,6 +278,9 @@ export default function ModernSearchBar() {
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
             onClick={() => setShowCal(false)}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Reisedaten auswählen"
           >
             <div
               className="relative w-full max-w-3xl overflow-visible rounded-2xl bg-white p-0 shadow-2xl"
@@ -442,7 +433,7 @@ export default function ModernSearchBar() {
         <button
           type="button"
           onClick={() => setPersons((p) => Math.max(1, p - 1))}
-          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand outline-none transition hover:bg-brand-light focus:ring-0"
+          className="bg-sky/60 rounded-full px-2 py-1 text-base font-bold text-brand outline-none transition hover:bg-brand-light focus:ring-0"
           tabIndex={-1}
           aria-label="Personen verringern"
         >
@@ -454,7 +445,7 @@ export default function ModernSearchBar() {
         <button
           type="button"
           onClick={() => setPersons((p) => Math.min(20, p + 1))}
-          className="rounded-full bg-sky/60 px-2 py-1 text-base font-bold text-brand outline-none transition hover:bg-brand-light focus:ring-0"
+          className="bg-sky/60 rounded-full px-2 py-1 text-base font-bold text-brand outline-none transition hover:bg-brand-light focus:ring-0"
           tabIndex={-1}
           aria-label="Personen erhöhen"
         >

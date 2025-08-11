@@ -1,61 +1,136 @@
 /* src/app/globals.css */
 
-/* Tailwind Basics */
+/* Tailwind */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* React-Day-Picker Styles */
-@import "react-day-picker/dist/style.css";
-
-/* React-Datepicker Custom Styles */
-@layer utilities {
-  .react-datepicker-popper {
-    position: fixed !important;
-    z-index: 50;
-  }
-
-  .react-datepicker {
-    @apply bg-white rounded-xl shadow-xl border border-gray-200;
-    font-family: inherit;
-  }
-  .react-datepicker__triangle {
-    display: none;
-  }
-  .react-datepicker__header {
-    @apply bg-brand text-white rounded-t-xl border-b border-gray-200;
-    padding: 0.75rem;
-  }
-  .react-datepicker__current-month {
-    @apply text-lg font-semibold;
-  }
-  .react-datepicker__day-names {
-    @apply px-4;
-  }
-  .react-datepicker__day-name {
-    @apply text-sm text-white/70;
-  }
-  .react-datepicker__day {
-    @apply w-10 h-10 leading-10 text-center rounded-full hover:bg-brand-light/30 transition;
-  }
-  .react-datepicker__day--selected,
-  .react-datepicker__day--keyboard-selected {
-    @apply bg-brand text-white;
-  }
-  .react-datepicker__day--today {
-    @apply bg-brand-light/20;
-  }
-  .react-datepicker__navigation-icon::before {
-    border-color: white;
-  }
-}
-
-/* Grundstyles für Smoothness und Font */
+/* ---------- THEME TOKENS (Light/Dark) ---------- */
 @layer base {
+  :root {
+    /* Neutrals */
+    --bg: 248 250 252;         /* slate-50 */
+    --bg-muted: 241 245 249;   /* slate-100 */
+    --card: 255 255 255;       /* white */
+    --border: 226 232 240;     /* slate-200 */
+    --text: 15 23 42;          /* slate-900 */
+    --text-muted: 100 116 139; /* slate-500 */
+
+    /* Brand */
+    --brand: 13 148 136;       /* teal-600 */
+    --brand-700: 4 120 87;     /* teal-700 */
+    --brand-50: 240 253 250;   /* teal-50 */
+  }
+
+  .dark {
+    --bg: 2 6 23;              /* slate-950 */
+    --bg-muted: 15 23 42;      /* slate-900 */
+    --card: 2 6 23;            /* slate-950 */
+    --border: 30 41 59;        /* slate-700 */
+    --text: 241 245 249;       /* slate-100 */
+    --text-muted: 148 163 184; /* slate-400 */
+
+    --brand: 45 212 191;       /* teal-400 */
+    --brand-700: 20 184 166;   /* teal-500 */
+    --brand-50: 6 95 70;       /* teal-800 (used as subtle bg) */
+  }
+
   html {
+    color-scheme: light dark;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
   }
-}
-/* Kalender-Styles für bessere Farben */
 
+  body {
+    background: rgb(var(--bg));
+    color: rgb(var(--text));
+  }
+}
+
+/* ---------- COMPONENT PRIMITIVES ---------- */
+@layer components {
+  .card {
+    @apply rounded-2xl border shadow-sm;
+    background: rgb(var(--card));
+    border-color: rgb(var(--border));
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center font-semibold rounded-full transition focus:outline-none;
+  }
+  .btn-primary {
+    @apply btn px-5 py-2.5 text-white;
+    background: rgb(var(--brand));
+  }
+  .btn-primary:hover { background: rgb(var(--brand-700)); }
+
+  .btn-ghost {
+    @apply btn px-4 py-2 border;
+    border-color: rgb(var(--border));
+    color: rgb(var(--text));
+    background: transparent;
+  }
+
+  .input {
+    @apply w-full rounded-xl border px-4 py-2.5 outline-none;
+    background: rgba(var(--card), 1);
+    border-color: rgb(var(--border));
+    color: rgb(var(--text));
+  }
+
+  .pill {
+    @apply inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold;
+    background: rgba(var(--brand), .1);
+    color: rgb(var(--brand));
+  }
+}
+
+/* ---------- LIGHTWEIGHT ANIMATIONS ---------- */
+@layer utilities {
+  .animate-in-up {
+    animation: in-up .6s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes in-up {
+    from { opacity: 0; transform: translateY(14px) }
+    to { opacity: 1; transform: translateY(0) }
+  }
+
+  .gradient-hero {
+    background:
+      radial-gradient(1200px 400px at 20% -10%, rgba(var(--brand), .18), transparent 60%),
+      radial-gradient(1000px 500px at 80% -15%, rgba(var(--brand), .14), transparent 65%);
+  }
+
+  .hero-wave {
+    mask-image: radial-gradient(100% 8px at 50% 0, #000 60%, transparent 100%);
+  }
+}
+
+/* ---------- 3rd-Party Widgets: Datepicker (neutral in Dark) ---------- */
+@layer utilities {
+  .react-datepicker-popper { position: fixed !important; z-index: 50; }
+  .react-datepicker { @apply rounded-xl border shadow-xl; background: rgb(var(--card)); border-color: rgb(var(--border)); }
+  .react-datepicker__header { background: rgb(var(--brand)); color: white; @apply rounded-t-xl; }
+  .react-datepicker__day { @apply w-10 h-10 leading-10 text-center rounded-full transition; }
+  .react-datepicker__day--selected,
+  .react-datepicker__day--keyboard-selected { background: rgb(var(--brand)); color: white; }
+}
+@layer utilities {
+  @keyframes testimonial {
+    0%, 25% { transform: translateX(0%); }
+    33%, 58% { transform: translateX(-100%); }
+    66%, 91% { transform: translateX(-200%); }
+    100% { transform: translateX(0%); }
+  }
+  .animate-testimonial {
+    animation: testimonial 16s ease-in-out infinite;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn .7s ease-out forwards;
+  }
+}

@@ -153,7 +153,7 @@ export default function NewBoatPage() {
         ps: form.ps ? Number(form.ps) : null,
         length: form.length || null,
         tags: selectedTags.length ? selectedTags : null,
-        owner: user.id, // falls du Trigger hast, kannst du das auch weglassen
+        owner: user.id,
       })
 
       if (insertErr) throw insertErr
@@ -173,35 +173,44 @@ export default function NewBoatPage() {
   )
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-6">
+    <div className="min-h-screen p-4 sm:p-6">
       <div className="mx-auto w-full max-w-3xl">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <button
             type="button"
             onClick={() => router.back()}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm
+                       font-semibold text-slate-700 transition hover:bg-slate-50
+                       dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
           >
             <ArrowLeft size={16} /> Zurück
           </button>
-          <h1 className="text-xl font-extrabold text-gray-900 sm:text-2xl">
+          <h1 className="text-xl font-extrabold text-slate-900 dark:text-slate-100 sm:text-2xl">
             Neues Inserat erstellen
           </h1>
           <div />
         </div>
 
         {/* Form */}
-        <form onSubmit={onSubmit} className="rounded-2xl bg-white p-5 shadow">
+        <form
+          onSubmit={onSubmit}
+          className="rounded-2xl border border-slate-200 bg-white
+                     p-5 shadow transition
+                     dark:border-slate-800 dark:bg-slate-900"
+        >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Name */}
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Name des Boots *
               </label>
               <input
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. Bavaria Cruiser 46"
                 required
               />
@@ -209,13 +218,15 @@ export default function NewBoatPage() {
 
             {/* Typ */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Typ
               </label>
               <select
                 value={form.type}
                 onChange={(e) => setField('type', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               >
                 <option value="">Bitte wählen…</option>
                 <option>Segelboot</option>
@@ -228,14 +239,16 @@ export default function NewBoatPage() {
 
             {/* Preis */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Preis / Tag (EUR) *
               </label>
               <input
                 inputMode="decimal"
                 value={form.price}
                 onChange={(e) => setField('price', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. 350"
                 required
               />
@@ -243,74 +256,84 @@ export default function NewBoatPage() {
 
             {/* Location */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Ort / Hafen
               </label>
               <input
                 value={form.location}
                 onChange={(e) => setField('location', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. Palma de Mallorca"
               />
             </div>
 
             {/* Land */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Land
               </label>
               <input
                 value={form.country}
                 onChange={(e) => setField('country', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. Spanien"
               />
             </div>
 
             {/* Personen */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Personen (max.)
               </label>
               <input
                 inputMode="numeric"
                 value={form.persons}
                 onChange={(e) => setField('persons', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. 8"
               />
             </div>
 
             {/* PS */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Leistung (PS)
               </label>
               <input
                 inputMode="numeric"
                 value={form.ps}
                 onChange={(e) => setField('ps', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. 250"
               />
             </div>
 
             {/* Länge */}
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Länge
               </label>
               <input
                 value={form.length}
                 onChange={(e) => setField('length', e.target.value)}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand"
+                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-slate-800
+                           focus:outline-none focus:ring-2 focus:ring-brand
+                           dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 placeholder="z.B. 12m"
               />
             </div>
 
             {/* Tags (max 2) */}
             <div className="sm:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-gray-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Tags (max. 2)
               </label>
               <div className="flex flex-wrap gap-2">
@@ -326,8 +349,8 @@ export default function NewBoatPage() {
                       className={[
                         'rounded-full border px-3 py-1.5 text-sm font-semibold transition',
                         active
-                          ? 'border-brand bg-brand text-white'
-                          : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
+                          ? 'border-brand bg-brand text-white hover:bg-brand-light'
+                          : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800',
                         disabled ? 'cursor-not-allowed opacity-50' : '',
                       ].join(' ')}
                     >
@@ -340,11 +363,15 @@ export default function NewBoatPage() {
 
             {/* Bilder hochladen (max 10) */}
             <div className="sm:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-gray-700">
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
                 Bilder (max. 10)
               </label>
               <div className="flex items-center gap-3">
-                <label className="flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                <label
+                  className="flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-2 text-sm
+                                   font-semibold text-slate-700 transition hover:bg-slate-100
+                                   dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                >
                   <UploadCloud size={18} />
                   Dateien wählen
                   <input
@@ -355,7 +382,7 @@ export default function NewBoatPage() {
                     onChange={onPickFiles}
                   />
                 </label>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-slate-500 dark:text-slate-400">
                   PNG/JPG, max. 10MB pro Datei
                 </span>
               </div>
@@ -365,7 +392,7 @@ export default function NewBoatPage() {
                   {previews.map((src, i) => (
                     <div
                       key={i}
-                      className="relative overflow-hidden rounded-xl border"
+                      className="relative overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700"
                     >
                       <img
                         src={src}
@@ -381,7 +408,7 @@ export default function NewBoatPage() {
                         <X size={16} />
                       </button>
                       {i === 0 && (
-                        <span className="absolute left-1 top-1 rounded-full bg-white/90 px-2 py-0.5 text-xs font-semibold text-slate-800">
+                        <span className="absolute left-1 top-1 rounded-full bg-white/90 px-2 py-0.5 text-xs font-semibold text-slate-800 dark:bg-slate-900/80 dark:text-slate-100">
                           Cover
                         </span>
                       )}
@@ -393,12 +420,12 @@ export default function NewBoatPage() {
 
             {/* Verfügbar */}
             <div className="sm:col-span-2">
-              <label className="inline-flex items-center gap-2 text-sm font-medium text-gray-700">
+              <label className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                 <input
                   type="checkbox"
                   checked={form.available}
                   onChange={(e) => setField('available', e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                  className="h-4 w-4 rounded border-slate-300 text-brand focus:ring-brand dark:border-slate-600"
                 />
                 Inserat ist verfügbar
               </label>
@@ -407,12 +434,12 @@ export default function NewBoatPage() {
 
           {/* Status */}
           {error && (
-            <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:bg-red-900/20 dark:text-red-300">
               {error}
             </div>
           )}
           {okMsg && (
-            <div className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
+            <div className="mt-4 flex items-center gap-2 rounded-lg bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300">
               <Check size={16} /> {okMsg}
             </div>
           )}
@@ -422,17 +449,20 @@ export default function NewBoatPage() {
             <button
               type="button"
               onClick={() => router.push('/dashboard')}
-              className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm
+                         font-semibold text-slate-700 transition hover:bg-slate-50
+                         dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               Abbrechen
             </button>
             <button
               type="submit"
               disabled={!canSubmit}
-              className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-light disabled:opacity-60"
+              className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-2 text-sm font-semibold
+                         text-white transition hover:bg-brand-light disabled:opacity-60"
             >
               {loading ? (
-                <Loader2 className="animate-spin mr-2" size={16} />
+                <Loader2 className="mr-2 animate-spin" size={16} />
               ) : null}
               Inserat erstellen
             </button>
